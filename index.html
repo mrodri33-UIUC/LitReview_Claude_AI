@@ -1,0 +1,699 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Literature Review Workbench</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:ital,wght@0,400;0,600;0,700;0,800;1,400&family=Source+Sans+3:ital,wght@0,400;0,600;1,400&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper: #F1F1EE;
+    --paper-deep: #E2E4E6;
+    --card: #FFFFFF;
+    --ink: #13294B;
+    --ink-soft: #3C4A63;
+    --ink-faint: #7C8798;
+    --rule: #C7CDD6;
+    --stamp: #E84A27;
+    --stamp-ink: #B23A1E;
+    --teal: #13294B;
+    --teal-deep: #0D1D34;
+    --wood: #13294B;
+    --wood-dark: #0D1D34;
+    --focus: #4C9AC4;
+    --shadow: rgba(19,41,75,0.18);
+  }
+  *{ box-sizing: border-box; }
+  html,body{
+    margin:0; padding:0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: "Source Sans 3", Georgia, serif;
+    background-image:
+      repeating-linear-gradient(180deg, rgba(19,41,75,0.02) 0px, rgba(19,41,75,0.02) 1px, transparent 1px, transparent 3px);
+  }
+  a{ color: var(--stamp-ink); }
+  ::selection{ background: var(--stamp); color: #fff; }
+  :focus-visible{ outline: 3px solid var(--focus); outline-offset: 2px; }
+
+  .wrap{ max-width: 1180px; margin: 0 auto; padding: 28px 20px 80px; }
+
+  /* ---------- Header: brass label plate ---------- */
+  header.plate{
+    background: linear-gradient(180deg, var(--wood), var(--wood-dark));
+    border-radius: 4px;
+    padding: 22px 26px;
+    box-shadow: 0 6px 0 rgba(0,0,0,0.25), 0 10px 18px var(--shadow);
+    display:flex; align-items:center; gap:18px; flex-wrap: wrap;
+    margin-bottom: 28px;
+  }
+  header.plate .pull{
+    width: 40px; height: 40px; border-radius: 6px;
+    background: var(--stamp);
+    box-shadow: inset 0 0 0 2px rgba(255,255,255,0.25), 0 2px 3px rgba(0,0,0,0.4);
+    flex: none;
+    display:flex; align-items:center; justify-content:center;
+    font-family: "Archivo", sans-serif; font-weight: 800; font-size: 20px; color: #fff;
+  }
+  header.plate .pull::before{ content: "I"; }
+  header.plate .title-block{ flex: 1; min-width: 240px; }
+  header.plate h1{
+    margin: 0; color: #FFFFFF;
+    font-family: "Archivo", sans-serif; font-weight: 800; font-size: clamp(22px, 3vw, 32px);
+    letter-spacing: 0.3px;
+  }
+  header.plate p{
+    margin: 4px 0 0; color: #B9C6D8; font-size: 13.5px;
+    font-family: "Space Mono", monospace; letter-spacing: 0.4px;
+  }
+  header.plate .school-line{
+    margin: 8px 0 0; color: var(--stamp); font-size: 12px; font-weight: 700;
+    font-family: "Archivo", sans-serif; letter-spacing: 0.6px; text-transform: uppercase;
+  }
+  header.plate .unofficial{
+    margin: 2px 0 0; color: #8FA0B8; font-size: 11px; font-style: italic;
+    font-family: "Source Sans 3", sans-serif;
+  }
+
+  section{ margin-bottom: 30px; }
+  .section-label{
+    font-family: "Space Mono", monospace; text-transform: uppercase;
+    font-size: 11.5px; letter-spacing: 1.5px; color: var(--ink-soft);
+    display:flex; align-items:center; gap: 10px; margin-bottom: 10px;
+  }
+  .section-label::after{ content:""; flex:1; height:1px; background: var(--rule); }
+
+  /* ---------- Call slip (search form) ---------- */
+  .slip{
+    background: var(--card);
+    border: 1px solid var(--rule);
+    border-top: 6px solid var(--stamp);
+    border-radius: 2px;
+    padding: 20px 22px;
+    box-shadow: 0 3px 10px var(--shadow);
+  }
+  .slip h2{ font-family:"Archivo", sans-serif; font-size: 19px; margin: 0 0 4px; }
+  .slip .hint{ color: var(--ink-faint); font-size: 13.5px; margin: 0 0 16px; }
+  .grid-form{ display:grid; grid-template-columns: 1.4fr 1fr 1fr; gap: 14px; }
+  @media (max-width: 720px){ .grid-form{ grid-template-columns: 1fr; } }
+  label{ display:block; font-family:"Space Mono", monospace; font-size: 11px; text-transform: uppercase; letter-spacing: 0.6px; color: var(--ink-soft); margin-bottom: 5px; }
+  input[type=text], select, textarea{
+    width: 100%; padding: 9px 10px; font-family: "Source Sans 3", sans-serif; font-size: 15px;
+    border: 1px solid var(--rule); border-radius: 2px; background: #fff; color: var(--ink);
+  }
+  textarea{ resize: vertical; min-height: 70px; }
+  .row-actions{ margin-top: 16px; display:flex; align-items:center; gap: 14px; flex-wrap: wrap; }
+
+  button{
+    font-family: "Space Mono", monospace; font-size: 12.5px; letter-spacing: 0.5px; text-transform: uppercase;
+    border: none; border-radius: 2px; padding: 11px 18px; cursor: pointer;
+    background: var(--stamp); color: #fff; box-shadow: 0 2px 0 var(--stamp-ink);
+    transition: transform 0.08s ease;
+  }
+  button:hover{ filter: brightness(1.05); }
+  button:active{ transform: translateY(2px); box-shadow: none; }
+  button.secondary{ background: var(--teal); box-shadow: 0 2px 0 var(--teal-deep); }
+  button.ghost{ background: transparent; color: var(--ink-soft); box-shadow: none; border: 1px solid var(--rule); }
+  button:disabled{ opacity: 0.5; cursor: not-allowed; }
+
+  .status{ font-family:"Space Mono", monospace; font-size: 12.5px; color: var(--ink-soft); }
+  .status.err{ color: var(--stamp-ink); }
+
+  /* ---------- Drawer tabs ---------- */
+  .drawers{ display:flex; gap: 8px; margin-bottom: -1px; }
+  .drawer-tab{
+    font-family: "Space Mono", monospace; font-size: 12px; text-transform: uppercase; letter-spacing: 0.6px;
+    padding: 10px 16px; background: var(--paper-deep); color: var(--ink-soft);
+    border: 1px solid var(--rule); border-bottom: none; border-radius: 4px 4px 0 0;
+    cursor: pointer;
+  }
+  .drawer-tab.active{ background: var(--card); color: var(--ink); font-weight: 700; box-shadow: 0 -3px 8px var(--shadow); }
+  .drawer-panel{
+    background: var(--card); border: 1px solid var(--rule); border-radius: 0 4px 4px 4px;
+    padding: 20px; min-height: 120px;
+  }
+  .cards-grid{ display: grid; grid-template-columns: repeat(auto-fill, minmax(270px, 1fr)); gap: 16px; }
+
+  /* ---------- Index card ---------- */
+  .idx-card{
+    position: relative;
+    background: #fff;
+    border: 1px solid var(--rule);
+    border-radius: 3px;
+    padding: 18px 14px 14px;
+    box-shadow: 0 2px 6px var(--shadow);
+  }
+  .idx-card::before{
+    content:""; position: absolute; top: -6px; left: 50%; transform: translateX(-50%);
+    width: 12px; height: 12px; border-radius: 50%;
+    background: var(--paper); border: 1px solid var(--rule);
+  }
+  .idx-card .stamp-year{
+    position: absolute; top: 10px; right: 10px;
+    font-family: "Space Mono", monospace; font-size: 11px; font-weight: 700;
+    color: var(--stamp); border: 1.5px solid var(--stamp); border-radius: 3px;
+    padding: 2px 6px; transform: rotate(-4deg);
+  }
+  .idx-card h3{ font-family:"Archivo", sans-serif; font-size: 16.5px; margin: 6px 26px 6px 0; line-height: 1.3; }
+  .idx-card .authors{ font-size: 13px; color: var(--ink-soft); margin: 0 0 8px; }
+  .idx-card .summary{ font-size: 13.5px; color: var(--ink); margin: 0 0 10px; line-height: 1.45; }
+  .idx-card .apa{ font-size: 12px; color: var(--ink-faint); border-top: 1px dashed var(--rule); padding-top: 8px; margin-bottom: 10px; }
+  .idx-card .card-foot{ display:flex; align-items:center; justify-content: space-between; gap: 8px; }
+  .idx-card .link{ font-size: 12px; }
+  .chip{
+    font-family: "Space Mono", monospace; font-size: 10.5px; text-transform: uppercase;
+    padding: 2px 7px; border-radius: 10px; letter-spacing: 0.4px;
+  }
+  .chip.foundational{ background: #FBDCCE; color: var(--stamp-ink); }
+  .chip.current{ background: #D7E0EA; color: var(--ink); }
+
+  /* ---------- Strength assessment ---------- */
+  .assess-row{ display:flex; gap: 6px; flex-wrap: wrap; align-items:center; margin: 8px 0 4px; }
+  .a-chip{
+    font-family:"Space Mono", monospace; font-size: 10.5px; background: var(--paper-deep);
+    color: var(--ink-soft); padding: 2px 7px; border-radius: 8px; letter-spacing: 0.2px;
+  }
+  .a-overall{
+    font-family:"Archivo", sans-serif; font-size: 10.5px; text-transform: uppercase; font-weight: 800;
+    padding: 2px 9px; border-radius: 8px; letter-spacing: 0.4px;
+  }
+  .a-overall.strong{ background: var(--ink); color: #fff; }
+  .a-overall.moderate{ background: var(--stamp); color: #fff; }
+  .a-overall.limited{ background: var(--rule); color: var(--ink-soft); }
+  .a-overall.unrated{ background: var(--paper-deep); color: var(--ink-faint); }
+  .assess-note{ font-size: 12px; color: var(--ink-soft); margin: 0 0 6px; line-height: 1.4; }
+  .assess-status{ font-family:"Space Mono", monospace; font-size: 11.5px; color: var(--ink-soft); margin: 6px 0; }
+  .assess-status.err{ color: var(--stamp-ink); }
+  .assess-btn{
+    font-family:"Space Mono", monospace; font-size: 11px; text-transform: uppercase;
+    background: #fff; border: 1px solid var(--rule); color: var(--ink-soft);
+    padding: 5px 9px; border-radius: 2px; cursor: pointer;
+  }
+  .filed-block{ padding: 4px 0 8px; border-bottom: 1px dotted var(--rule); }
+  .filed-block:last-of-type{ border-bottom: none; }
+  .filed-block .filed-item{ border-bottom: none; padding-bottom: 4px; }
+
+  .file-btn{
+    font-family:"Space Mono", monospace; font-size: 11.5px; text-transform: uppercase;
+    background: var(--paper); border: 1px solid var(--rule); color: var(--ink-soft);
+    padding: 6px 10px; border-radius: 2px; cursor: pointer;
+  }
+  .file-btn.filed{ background: var(--stamp); color: #fff; border-color: var(--stamp-ink); }
+
+  /* ---------- Workspace: folders by theme ---------- */
+  .theme-add{ display:flex; gap: 10px; margin-bottom: 16px; }
+  .theme-add input{ flex: 1; }
+  .folder{
+    background: var(--card); border: 1px solid var(--rule); border-left: 8px solid var(--teal);
+    border-radius: 2px; padding: 16px 18px; margin-bottom: 16px;
+  }
+  .folder-head{ display:flex; align-items:center; justify-content: space-between; gap: 10px; flex-wrap: wrap; margin-bottom: 8px; }
+  .folder-head h3{ font-family:"Archivo", sans-serif; font-size: 18px; margin: 0; }
+  .folder .empty{ color: var(--ink-faint); font-size: 13.5px; font-style: italic; }
+  .filed-item{ display:flex; align-items:center; justify-content: space-between; gap: 10px; padding: 6px 0; border-bottom: 1px dotted var(--rule); font-size: 13.5px; }
+  .filed-item:last-of-type{ border-bottom: none; }
+  .filed-item .meta{ flex: 1; }
+  .filed-item select{ width: auto; padding: 4px 6px; font-size: 12px; }
+  .remove-x{ background: none; border: none; color: var(--stamp-ink); cursor: pointer; font-size: 15px; box-shadow: none; padding: 2px 6px; }
+
+  .synth-box{ margin-top: 10px; }
+  .synth-box textarea{ font-size: 14.5px; line-height: 1.5; min-height: 110px; }
+
+  /* ---------- Manual add ---------- */
+  details.manual{ margin-top: 10px; }
+  details.manual summary{ cursor: pointer; font-family:"Space Mono", monospace; font-size: 12px; color: var(--ink-soft); text-transform: uppercase; letter-spacing: 0.5px; }
+  .manual-grid{ display:grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 12px; }
+  @media (max-width: 600px){ .manual-grid{ grid-template-columns: 1fr; } }
+
+  /* ---------- Export ---------- */
+  .export-box{ background: var(--card); border: 1px solid var(--rule); border-radius: 2px; padding: 18px 20px; }
+  .ref-list p{ font-size: 13.5px; padding-left: 28px; text-indent: -28px; margin: 0 0 10px; line-height: 1.5; }
+
+  .note{
+    font-size: 12.5px; color: var(--ink-soft); background: var(--paper-deep);
+    border: 1px solid var(--rule); border-radius: 2px; padding: 10px 14px; margin-top: 10px;
+  }
+  .checkbox-row{ display:flex; align-items:center; gap: 8px; font-size: 13px; color: var(--ink-soft); }
+  .checkbox-row input{ width: auto; }
+
+  @media (prefers-reduced-motion: reduce){ *{ transition: none !important; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="plate">
+    <div class="pull"></div>
+    <div class="title-block">
+      <h1>The Literature Review Workbench</h1>
+      <p>SEARCH THE STACKS &middot; FILE YOUR SOURCES &middot; DRAFT IN APA</p>
+      <p class="school-line">University of Illinois Urbana&ndash;Champaign</p>
+      <p class="unofficial">Fan-built study tool in Illinois orange &amp; blue &mdash; not an official university product.</p>
+    </div>
+  </header>
+
+  <!-- SEARCH -->
+  <section>
+    <div class="section-label">Call Slip &mdash; Request Literature</div>
+    <div class="slip">
+      <h2>What are you reviewing?</h2>
+      <p class="hint">Claude will search the web for real, citable sources: foundational/highly-cited works and current literature from the last few years. Every card lands with a ready-to-use APA 7 reference.</p>
+      <div class="grid-form">
+        <div>
+          <label for="topic">Topic / research question</label>
+          <input type="text" id="topic" placeholder="e.g., formative feedback in online higher education">
+        </div>
+        <div>
+          <label for="field">Field / discipline</label>
+          <input type="text" id="field" placeholder="e.g., educational psychology">
+        </div>
+        <div>
+          <label for="keywords">Extra keywords (optional)</label>
+          <input type="text" id="keywords" placeholder="e.g., self-regulation, LMS">
+        </div>
+      </div>
+      <div class="row-actions">
+        <button id="searchBtn" onclick="runSearch()">Pull the cards</button>
+        <span class="status" id="searchStatus"></span>
+      </div>
+      <div class="note">This app calls the Claude API's live web search from inside Claude.ai (or another host that proxies the API for it). If you open this file outside that environment, the search call won't have credentials to run — the manual-entry and drafting tools below still work fully offline.</div>
+    </div>
+  </section>
+
+  <!-- RESULTS -->
+  <section>
+    <div class="section-label">The Drawers</div>
+    <div class="drawers">
+      <div class="drawer-tab active" data-drawer="foundational" onclick="switchDrawer('foundational')">Foundational &amp; Highly Cited</div>
+      <div class="drawer-tab" data-drawer="current" onclick="switchDrawer('current')">Recent &amp; Current</div>
+    </div>
+    <div class="drawer-panel">
+      <div class="cards-grid" id="cardsGrid">
+        <p class="empty" style="color:var(--ink-faint); font-style:italic;">No cards pulled yet — submit a call slip above, or file a source manually in your workspace below.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- WORKSPACE -->
+  <section>
+    <div class="section-label">Your Review Workspace</div>
+
+    <div class="theme-add">
+      <input type="text" id="newTheme" placeholder="Name a theme, e.g., 'Feedback timing' or 'Measurement challenges'">
+      <button class="secondary" onclick="addTheme()">Add theme folder</button>
+      <button class="ghost" onclick="assessAllFiled()">Assess strength of all filed sources</button>
+    </div>
+
+    <div id="folders"></div>
+
+    <details class="manual">
+      <summary>+ File a source by hand (already have one? add it directly)</summary>
+      <div class="manual-grid">
+        <div><label>Authors (APA style)</label><input type="text" id="mAuthors" placeholder="Smith, J. A., &amp; Lee, K."></div>
+        <div><label>Year</label><input type="text" id="mYear" placeholder="2023"></div>
+        <div><label>Title</label><input type="text" id="mTitle" placeholder="Article or book title"></div>
+        <div><label>Source (journal, publisher, volume/pages)</label><input type="text" id="mSource" placeholder="Journal of X, 12(3), 45-67"></div>
+        <div><label>URL or DOI (optional)</label><input type="text" id="mUrl" placeholder="https://doi.org/..."></div>
+        <div><label>Why it matters (optional, one line)</label><input type="text" id="mSummary" placeholder="Relevance to your review"></div>
+      </div>
+      <div class="row-actions"><button class="secondary" onclick="addManual()">File this source</button></div>
+    </details>
+  </section>
+
+  <!-- EXPORT -->
+  <section>
+    <div class="section-label">Draft &amp; Export</div>
+    <div class="export-box">
+      <label for="introBox">Introduction / framing (optional — edit freely)</label>
+      <textarea id="introBox" placeholder="Set up the scope and purpose of your literature review here..."></textarea>
+      <div style="height:14px;"></div>
+      <div class="row-actions">
+        <button onclick="compileExport()">Compile full review</button>
+        <button class="ghost" onclick="copyExport()">Copy to clipboard</button>
+        <button class="ghost" onclick="downloadExport()">Download .md</button>
+      </div>
+      <div style="height:14px;"></div>
+      <textarea id="exportBox" style="min-height:260px; font-family:'Source Sans 3', sans-serif; font-size:14.5px;" placeholder="Your compiled draft, including an alphabetized APA reference list, will appear here after you click 'Compile full review'."></textarea>
+      <div class="note">AI-assisted drafting can still get details wrong. Before submission, verify every reference against the original source (author names, year, volume/issue, page numbers, DOI) and confirm each in-text citation matches an entry in your reference list. Journal rank and citation-tier estimates from "Assess strength" are AI-researched approximations — cross-check them against Scopus, Web of Science, or Google Scholar before using them to justify a source's inclusion.</div>
+    </div>
+  </section>
+
+</div>
+
+<script>
+// ---------------- State ----------------
+let library = { foundational: [], current: [] };
+let idCounter = 0;
+let workspace = []; // {id, authors, year, title, source, apa, inText, summary, url, theme}
+let themes = ["Uncategorized"];
+let activeDrawer = "foundational";
+let currentTopic = "";
+let assessments = {}; // id -> {journal_rank, citation_tier, alignment_score, alignment_note, overall, rationale, loading, error}
+
+function uid(){ idCounter += 1; return "card_" + idCounter; }
+
+// ---------------- API ----------------
+async function callClaude({ system, prompt, useSearch }) {
+  const body = {
+    model: "claude-sonnet-4-6",
+    max_tokens: 1000,
+    system: system,
+    messages: [{ role: "user", content: prompt }]
+  };
+  if (useSearch) {
+    body.tools = [{ type: "web_search_20250305", name: "web_search" }];
+  }
+  const res = await fetch("https://api.anthropic.com/v1/messages", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(body)
+  });
+  if (!res.ok) throw new Error("API request failed: " + res.status);
+  const data = await res.json();
+  const text = (data.content || [])
+    .filter(b => b.type === "text")
+    .map(b => b.text)
+    .join("\n")
+    .trim();
+  return text;
+}
+
+function extractJson(text) {
+  let cleaned = text.replace(/```json/gi, "").replace(/```/g, "").trim();
+  const start = cleaned.indexOf("{");
+  const end = cleaned.lastIndexOf("}");
+  if (start === -1 || end === -1) throw new Error("No JSON object found in response.");
+  cleaned = cleaned.slice(start, end + 1);
+  return JSON.parse(cleaned);
+}
+
+// ---------------- Search ----------------
+async function runSearch(){
+  const topic = document.getElementById("topic").value.trim();
+  const field = document.getElementById("field").value.trim();
+  const keywords = document.getElementById("keywords").value.trim();
+  const statusEl = document.getElementById("searchStatus");
+  const btn = document.getElementById("searchBtn");
+
+  if (!topic) { statusEl.textContent = "Add a topic first."; statusEl.className = "status err"; return; }
+
+  currentTopic = topic;
+  btn.disabled = true;
+  statusEl.className = "status";
+  statusEl.textContent = "Searching the stacks... this can take a moment.";
+
+  const system = "You are a research librarian assistant helping build academic literature reviews. You have live web search available and you MUST use it to find real, verifiable scholarly sources (peer-reviewed articles, books, major reports). Only include sources you can support from search results. Respond with ONLY a single valid JSON object — no markdown fences, no preamble, no commentary before or after it.";
+
+  const prompt = `Topic: ${topic}
+Field/discipline: ${field || "not specified"}
+Additional keywords: ${keywords || "none"}
+
+Search the web for scholarly literature on this topic and return:
+1. "foundational": up to 5 highly-cited, seminal or foundational works in this area (these can be older, classic studies that shaped the field).
+2. "current": up to 5 recent works (roughly the last 2-3 years) reflecting the current state of the field.
+
+Each entry must use this exact shape:
+{"authors":"Last, F. M., & Last, F. M.","year":"YYYY","title":"Title of the work","source":"Journal name, volume(issue), pages — or publisher","apa":"Full, ready-to-use APA 7th edition reference list entry","in_text":"(Author, Year)","summary":"One sentence on what it found and why it matters here","url":"link if available, else empty string"}
+
+Return ONLY this JSON object, nothing else:
+{"foundational":[...],"current":[...]}`;
+
+  try {
+    const raw = await callClaude({ system, prompt, useSearch: true });
+    const parsed = extractJson(raw);
+    library.foundational = (parsed.foundational || []).map(p => ({ ...p, id: uid(), category: "foundational" }));
+    library.current = (parsed.current || []).map(p => ({ ...p, id: uid(), category: "current" }));
+    statusEl.textContent = `Pulled ${library.foundational.length} foundational and ${library.current.length} current cards.`;
+    renderCards();
+  } catch (err) {
+    statusEl.className = "status err";
+    statusEl.textContent = "Couldn't complete the search (" + err.message + "). You can still file sources by hand below.";
+  } finally {
+    btn.disabled = false;
+  }
+}
+
+function switchDrawer(name){
+  activeDrawer = name;
+  document.querySelectorAll(".drawer-tab").forEach(t => t.classList.toggle("active", t.dataset.drawer === name));
+  renderCards();
+}
+
+function renderCards(){
+  const grid = document.getElementById("cardsGrid");
+  const list = library[activeDrawer] || [];
+  if (list.length === 0) {
+    grid.innerHTML = '<p style="color:var(--ink-faint); font-style:italic;">No cards in this drawer yet.</p>';
+    return;
+  }
+  grid.innerHTML = list.map(p => {
+    const filed = workspace.some(w => w.id === p.id);
+    return `
+      <div class="idx-card">
+        <span class="stamp-year">${escapeHtml(p.year || "?")}</span>
+        <span class="chip ${p.category}">${p.category === "foundational" ? "Foundational" : "Current"}</span>
+        <h3>${escapeHtml(p.title || "Untitled")}</h3>
+        <p class="authors">${escapeHtml(p.authors || "")}</p>
+        <p class="summary">${escapeHtml(p.summary || "")}</p>
+        <p class="apa">${escapeHtml(p.apa || "")}</p>
+        ${renderAssessment(p.id)}
+        <div class="card-foot">
+          ${p.url ? `<a class="link" href="${escapeAttr(p.url)}" target="_blank" rel="noopener">source link</a>` : "<span></span>"}
+          <span style="display:flex; gap:6px;">
+            <button class="assess-btn" onclick="assessStrength('${p.id}')">Assess strength</button>
+            <button class="file-btn ${filed ? "filed" : ""}" onclick="toggleFile('${p.id}')">${filed ? "Filed ✓" : "File this card"}</button>
+          </span>
+        </div>
+      </div>`;
+  }).join("");
+}
+
+function toggleFile(id){
+  const existing = workspace.find(w => w.id === id);
+  if (existing) {
+    workspace = workspace.filter(w => w.id !== id);
+  } else {
+    const src = [...library.foundational, ...library.current].find(p => p.id === id);
+    if (!src) return;
+    workspace.push({ ...src, theme: "Uncategorized" });
+  }
+  renderCards();
+  renderFolders();
+}
+
+// ---------------- Strength / accuracy assessment ----------------
+function renderAssessment(id){
+  const a = assessments[id];
+  if (!a) return "";
+  if (a.loading) return `<p class="assess-status">Checking journal rank, citation strength, and topical alignment...</p>`;
+  if (a.error) return `<p class="assess-status err">Couldn't assess this source (${escapeHtml(a.error)}). Try again, or check it manually.</p>`;
+  const overallClass = (a.overall || "unrated").toLowerCase();
+  return `
+    <div class="assess-row">
+      <span class="a-chip">Journal: ${escapeHtml(a.journal_rank || "unknown")}</span>
+      <span class="a-chip">Citations: ${escapeHtml(a.citation_tier || "unknown")}</span>
+      <span class="a-chip">Alignment: ${escapeHtml(String(a.alignment_score ?? "?"))}/5</span>
+      <span class="a-overall ${overallClass}">${escapeHtml(a.overall || "Unrated")}</span>
+    </div>
+    <p class="assess-note">${escapeHtml(a.rationale || a.alignment_note || "")}</p>`;
+}
+
+async function assessStrength(id){
+  const item = [...library.foundational, ...library.current, ...workspace].find(x => x.id === id);
+  if (!item) return;
+
+  assessments[id] = { loading: true };
+  renderCards();
+  renderFolders();
+
+  const system = "You are a research methods consultant helping evaluate scholarly sources for an academic literature review. Use web search to check the publishing journal's or publisher's reputation/ranking (e.g., quartile, impact-factor tier, or standing of the press) and the approximate citation count for this specific work, if it can be found. Be honest about uncertainty — say \"unknown\" rather than guessing a number. Respond with ONLY a single valid JSON object, no markdown fences, no commentary before or after it.";
+
+  const prompt = `Reference to evaluate:
+APA: ${item.apa || ""}
+Relevance note: ${item.summary || ""}
+
+Research topic being reviewed: ${currentTopic || "not specified — judge general scholarly relevance from the reference and note above"}
+
+Search the web to determine:
+1. journal_rank: the publishing journal's/publisher's reputation (e.g., "Q1", "Q2", "Q3", "Q4", "top university press", "reputable but unranked outlet", or "unknown").
+2. citation_tier: an approximate citation tier for this specific work (e.g., "highly cited (500+)", "moderately cited (50-500)", "emerging/low citations (<50)", or "unknown").
+3. alignment_score: integer 1-5 for how well this source aligns with the research topic above.
+4. alignment_note: one sentence justifying the alignment score.
+5. overall: one of "Strong", "Moderate", or "Limited" — combining outlet quality, citation strength, and topical alignment.
+6. rationale: one sentence justifying the overall rating.
+
+Return ONLY this JSON:
+{"journal_rank":"","citation_tier":"","alignment_score":0,"alignment_note":"","overall":"","rationale":""}`;
+
+  try {
+    const raw = await callClaude({ system, prompt, useSearch: true });
+    const parsed = extractJson(raw);
+    assessments[id] = { ...parsed, loading: false };
+  } catch (err) {
+    assessments[id] = { error: err.message, loading: false };
+  }
+  renderCards();
+  renderFolders();
+}
+
+async function assessAllFiled(){
+  const ids = workspace.map(w => w.id);
+  for (const id of ids) {
+    await assessStrength(id);
+  }
+}
+
+// ---------------- Manual entry ----------------
+function addManual(){
+  const authors = document.getElementById("mAuthors").value.trim();
+  const year = document.getElementById("mYear").value.trim();
+  const title = document.getElementById("mTitle").value.trim();
+  const source = document.getElementById("mSource").value.trim();
+  const url = document.getElementById("mUrl").value.trim();
+  const summary = document.getElementById("mSummary").value.trim();
+
+  if (!authors || !year || !title) { alert("Please add at least authors, year, and title."); return; }
+
+  const apa = `${authors} (${year}). ${title}. ${source || ""}`.trim();
+  const inText = `(${authors.split(",")[0]}, ${year})`;
+
+  const entry = { id: uid(), authors, year, title, source, apa, in_text: inText, summary, url, theme: "Uncategorized", category: "manual" };
+  workspace.push(entry);
+  ["mAuthors","mYear","mTitle","mSource","mUrl","mSummary"].forEach(fid => document.getElementById(fid).value = "");
+  renderFolders();
+}
+
+// ---------------- Themes / folders ----------------
+function addTheme(){
+  const input = document.getElementById("newTheme");
+  const name = input.value.trim();
+  if (!name) return;
+  if (!themes.includes(name)) themes.push(name);
+  input.value = "";
+  renderFolders();
+}
+
+function setTheme(id, theme){
+  const item = workspace.find(w => w.id === id);
+  if (item) item.theme = theme;
+  renderFolders();
+}
+
+function removeFromWorkspace(id){
+  workspace = workspace.filter(w => w.id !== id);
+  renderCards();
+  renderFolders();
+}
+
+function renderFolders(){
+  const container = document.getElementById("folders");
+  container.innerHTML = themes.map(theme => {
+    const items = workspace.filter(w => w.theme === theme);
+    const themeOptions = themes.map(t => `<option value="${escapeAttr(t)}" ${t === theme ? "selected" : ""}>${escapeHtml(t)}</option>`).join("");
+    return `
+      <div class="folder" id="folder_${escapeAttr(slug(theme))}">
+        <div class="folder-head">
+          <h3>${escapeHtml(theme)}</h3>
+          <button class="secondary" style="padding:7px 12px;" onclick="draftSynthesis('${escapeAttr(theme)}')" ${items.length === 0 ? "disabled" : ""}>Draft synthesis paragraph</button>
+        </div>
+        ${items.length === 0 ? '<p class="empty">No sources filed here yet.</p>' : items.map(w => `
+          <div class="filed-block">
+            <div class="filed-item">
+              <span class="meta">${escapeHtml(w.authors)} (${escapeHtml(w.year)}) — ${escapeHtml(w.title)}</span>
+              <button class="assess-btn" onclick="assessStrength('${w.id}')">Assess</button>
+              <select onchange="setTheme('${w.id}', this.value)">${themeOptions}</select>
+              <button class="remove-x" title="Remove from workspace" onclick="removeFromWorkspace('${w.id}')">&times;</button>
+            </div>
+            ${renderAssessment(w.id)}
+          </div>
+        `).join("")}
+        <div class="synth-box" id="synth_${escapeAttr(slug(theme))}"></div>
+      </div>`;
+  }).join("");
+}
+
+function slug(s){ return s.toLowerCase().replace(/[^a-z0-9]+/g, "_"); }
+
+async function draftSynthesis(theme){
+  const items = workspace.filter(w => w.theme === theme);
+  const box = document.getElementById("synth_" + slug(theme));
+  if (!box) return;
+  box.innerHTML = `<p class="status">Drafting a synthesis of ${items.length} source(s)...</p>`;
+
+  const sourcesList = items.map(w => `- ${w.in_text || ""}: ${w.title} — ${w.summary || "no summary provided"}`).join("\n");
+
+  const system = "You are an academic writing assistant helping draft a literature review section for an education research manuscript. Write in a formal academic register. Do not invent findings beyond what is given. Use the in-text citations exactly as provided. Keep the paragraph focused and well-organized (roughly 150-220 words).";
+  const prompt = `Theme: ${theme}\n\nSynthesize the following sources into one cohesive literature review paragraph that connects and compares them thematically, using their in-text citations:\n\n${sourcesList}`;
+
+  try {
+    const draft = await callClaude({ system, prompt, useSearch: false });
+    box.innerHTML = `<textarea class="synthTextarea">${escapeHtml(draft)}</textarea>`;
+  } catch (err) {
+    box.innerHTML = `<p class="status err">Couldn't draft this one (${escapeHtml(err.message)}). You can write it directly in the box below.</p><textarea class="synthTextarea"></textarea>`;
+  }
+}
+
+// ---------------- Export ----------------
+function compileExport(){
+  const intro = document.getElementById("introBox").value.trim();
+  let out = "";
+  if (intro) out += intro + "\n\n";
+
+  themes.forEach(theme => {
+    const items = workspace.filter(w => w.theme === theme);
+    if (items.length === 0) return;
+    out += `## ${theme}\n\n`;
+    const box = document.getElementById("synth_" + slug(theme));
+    const ta = box ? box.querySelector(".synthTextarea") : null;
+    if (ta && ta.value.trim()) {
+      out += ta.value.trim() + "\n\n";
+    } else {
+      out += items.map(w => `${w.in_text || ""} discusses: ${w.summary || w.title}.`).join(" ") + "\n\n";
+    }
+  });
+
+  const uncategorized = workspace.filter(w => !themes.includes(w.theme));
+  if (uncategorized.length) {
+    out += "## Uncategorized\n\n" + uncategorized.map(w => `${w.in_text || ""}: ${w.summary || w.title}.`).join(" ") + "\n\n";
+  }
+
+  out += "## References\n\n";
+  const apaList = [...workspace].sort((a,b) => (a.authors||"").localeCompare(b.authors||"")).map(w => w.apa || `${w.authors} (${w.year}). ${w.title}.`);
+  out += apaList.join("\n\n");
+
+  document.getElementById("exportBox").value = out.trim();
+}
+
+function copyExport(){
+  const box = document.getElementById("exportBox");
+  box.select();
+  document.execCommand("copy");
+}
+
+function downloadExport(){
+  const text = document.getElementById("exportBox").value;
+  if (!text.trim()) { alert("Compile the review first."); return; }
+  const blob = new Blob([text], { type: "text/markdown" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "literature-review-draft.md";
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+// ---------------- Utils ----------------
+function escapeHtml(str){
+  if (str === undefined || str === null) return "";
+  return String(str).replace(/[&<>"']/g, s => ({ "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;" }[s]));
+}
+function escapeAttr(str){ return escapeHtml(str); }
+
+// ---------------- Init ----------------
+renderFolders();
+renderCards();
+</script>
+</body>
+</html>
